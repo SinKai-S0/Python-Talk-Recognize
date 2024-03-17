@@ -1,0 +1,20 @@
+# venv
+myvenv
+
+# python
+*.pyc
+__pycache__/
+
+# build
+dist/
+build/
+
+
+# log
+*.log
+log/
+
+README.txt
+
+test/
+include/
