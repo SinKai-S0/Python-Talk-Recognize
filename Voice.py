@@ -16,8 +16,6 @@ CDLL(str(Path("include/onnxruntime-win-x64-1.16.1/lib/onnxruntime_providers_shar
 # https://github.com/juu7g/Python-voice-input/blob/main/voice_input_juu7g/voice_input_Sphinx.py
 
 import speech_recognition as sr
-from playsound import playsound
-from simpleaudio import WaveObject
 from voicevox_core import VoicevoxCore, AccelerationMode, METAS
 from pydub import AudioSegment
 from pydub.playback import play
@@ -231,27 +229,6 @@ class VoiceVoxTalk:
         wav = self.core.synthesis(query,self.speaker_id)
         return wav
     
-    def _speak(self,text,lock):
-        """
-        ファイルを出力して喋らせる(simpleaudio.WaveObject)
-        
-        args:
-            text:テキスト
-            lock:Thread.Lock
-        """
-        if not text:
-            return
-        logger.debug("<Speak Start>")
-        with lock:
-            self.reload_speaker()
-            wav = self.synthesis(text)
-            with open("output.wav","wb") as f:
-                f.write(wav)
-            wavobj = WaveObject.from_wave_file("output.wav")
-            playing = wavobj.play()
-            playing.wait_done()
-        logger.debug("<Speak Finished>")
-    
     
     def speak_thread_pool(self,text):
         """
@@ -327,8 +304,7 @@ def main():
                 if not future.done():
                     continue
                 result = future.result()
-                with open("output.txt","a",encoding="utf-8") as f:
-                    f.write(result+"\n")
+                print(result)
     except KeyboardInterrupt:
         print("Exit")
         pass
