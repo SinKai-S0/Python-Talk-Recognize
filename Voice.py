@@ -64,8 +64,7 @@ class VoiceRecognizer:
         """
         logger.debug("<Recognize Submit>")
         future = self.pool.submit(self.recognize_voice,audio,self.output)
-        if self.talk_flag:
-            future.add_done_callback(self.talk)
+        future.add_done_callback(self.talk)
         self.futures.append(future)
         
         
@@ -144,9 +143,10 @@ class VoiceRecognizer:
         """
         VoiceVoxとの連携でテキストを喋らせる(ThreadPoolExecutorコールバック用)
         """
-        self.vvox.speak_thread_pool(future.result())
+        if self.talk_flag:
+            self.vvox.speak_thread_pool(future.result())
         if len(self.futures) > self.futures_limit:
-            self.futures.pop(0)
+            self.futures = self.futures[-self.futures_limit:]
             
             
     def change_device(self,n):
